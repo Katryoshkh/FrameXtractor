@@ -90,4 +90,4 @@ fi
 echo
 echo "Extraction complete!"
 echo "Frames saved in: $OUTPUT_DIR/"
-echo "=========================================================="
+echo "========================================================"

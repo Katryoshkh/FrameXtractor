@@ -1,13 +1,13 @@
 #!/bin/bash
 
 echo "========================================================"
-echo "  🎞️ FrameXtractor — FFmpeg Interactive Frame Extractor "
+echo "   FrameXtractor — FFmpeg Interactive Frame Extractor   "
 echo "========================================================"
 echo
 
 read -rp "Enter video file path: " INPUT
 if [ ! -f "$INPUT" ]; then
-    echo "❌ Error: File not found: $INPUT"
+    echo "Error: File not found: $INPUT"
     exit 1
 fi
 
@@ -27,7 +27,7 @@ read -rp "Choose image format (png/jpg) [default: png]: " FORMAT
 FORMAT=${FORMAT:-png}
 FORMAT="${FORMAT,,}"
 if [[ "$FORMAT" != "png" && "$FORMAT" != "jpg" && "$FORMAT" != "jpeg" ]]; then
-    echo "❌ Invalid format. Please choose 'png' or 'jpg'."
+    echo "Invalid format. Please choose 'png' or 'jpg'."
     exit 1
 fi
 
@@ -36,19 +36,19 @@ if [[ "$FORMAT" == "jpg" || "$FORMAT" == "jpeg" ]]; then
     read -rp "Set JPEG quality (2–31, lower = better) [default: 2]: " QUALITY
     QUALITY=${QUALITY:-2}
     if ! [[ "$QUALITY" =~ ^[0-9]+$ ]] || [ "$QUALITY" -lt 2 ] || [ "$QUALITY" -gt 31 ]; then
-        echo "❌ Invalid quality value. Must be between 2 and 31."
+        echo "Invalid quality value. Must be between 2 and 31."
         exit 1
     fi
 fi
 
 echo
-echo "💡 Tip: format scaling = width:height (example: 1280:-1 or -1:720)"
+echo "Tip: format scaling = width:height (example: 1280:-1 or -1:720)"
 read -rp "Enter scaling (leave blank to keep original resolution): " SCALE
 
 VF_FILTER="fps=$FPS"
 if [ -n "$SCALE" ]; then
     if [[ "$SCALE" != *":"* ]]; then
-        echo "❌ Invalid scaling format. Use width:height (e.g., 1280:-1)"
+        echo "Invalid scaling format. Use width:height (e.g., 1280:-1)"
         exit 1
     fi
     VF_FILTER="$VF_FILTER,scale=$SCALE"
@@ -67,8 +67,8 @@ echo "Input video : $INPUT"
 echo "Output dir  : $OUTPUT_DIR"
 echo "FPS         : $FPS"
 echo "Format      : $FORMAT"
-if [ -n "$SCALE" ]; then echo "Scale       : $SCALE (custom)"; else echo "Scale       : original (1:1)"; fi
-if [ -n "$QUALITY" ]; then echo "Quality     : $QUALITY"; fi
+if [ -n "$SCALE" ]; then echo "Scale: $SCALE (custom)"; else echo "Scale: original (1:1)"; fi
+if [ -n "$QUALITY" ]; then echo "Quality: $QUALITY"; fi
 echo "Output name : $PATTERN"
 echo "========================================================"
 read -rp "Proceed with extraction? (y/n): " CONFIRM
@@ -78,7 +78,7 @@ if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
 fi
 
 echo
-echo "▶️  Starting frame extraction..."
+echo "Starting frame extraction..."
 if [[ "$FORMAT" == "png" ]]; then
     ffmpeg -hide_banner -loglevel info -i "$INPUT" -vf "$VF_FILTER" \
            "$OUTPUT_DIR/$PATTERN"
@@ -88,6 +88,6 @@ else
 fi
 
 echo
-echo "✅ Extraction complete!"
+echo "Extraction complete!"
 echo "Frames saved in: $OUTPUT_DIR/"
 echo "=========================================================="

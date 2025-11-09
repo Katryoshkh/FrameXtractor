@@ -1,6 +1,6 @@
-# FrameXtract
+# FrameXtractor
 
-**FrameXtract** is an interactive, FFmpeg-based video frame extractor. It produces **high-quality frames** with customizable **FPS, format, resolution, and output naming**.
+**FrameXtractor** is an interactive, FFmpeg-based video frame extractor. It produces **high-quality frames** with customizable **FPS, format, resolution, and output naming**.
 
 ## 🔹 Features
 

@@ -46,6 +46,10 @@ macOS (Homebrew):
 ```bash
 brew install ffmpeg
 ```
+Android (Termux): 
+```bash
+pkg install ffmpeg
+```
 Windows: 
 Download binaries from [ffmpeg.org](https://ffmpeg.org)
 

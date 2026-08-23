@@ -1,5 +1,101 @@
 #!/bin/bash
 
+# ============================================================
+# Version
+# ============================================================
+SCRIPT_VERSION="2.0.0"
+
+# ============================================================
+# Help / usage text — handled before anything else runs, so
+# `-h` / `--help` never triggers interactive prompts.
+# ============================================================
+show_help() {
+    cat <<'EOF'
+FrameXtractor — FFmpeg Interactive Frame Extractor
+
+USAGE:
+    framextractor.sh [OPTION]
+
+    Run with no options to start the interactive prompts.
+
+OPTIONS:
+    -h, --help       Show this help message and exit
+    -v, --version    Show version information and exit
+
+DESCRIPTION:
+    Extracts frames from video files using FFmpeg, driven entirely
+    by interactive terminal prompts (no arguments needed for normal use).
+
+    On launch you choose a processing mode:
+
+      [1] Single file
+          Extract frames from one video. Leave the file path blank
+          to auto-scan the current directory and pick from a
+          numbered list instead of typing the full path/filename.
+
+      [2] Multi file / parallel
+          Select several videos at once (e.g. "1 2 4" or "all") and
+          batch-extract them in one run. You choose:
+            - Output folder grouping: one shared folder for all
+              videos, a separate folder per video, or custom
+              grouping (e.g. video 2 & video 4 share a folder while
+              others get their own).
+            - Auto or Manual configuration: one shared FPS/format/
+              scale/base-name for every video (auto-numbered output
+              files), or configure each video's folder name, output
+              name, FPS, format, quality, and scale independently.
+          Jobs run through a queue, not all at once — you set how
+          many may run simultaneously (default: 1, fully sequential)
+          to avoid overloading the CPU.
+
+    For every video you can set:
+      - Output folder name       (default: frames)
+      - FPS (frames per second)  (default: 30)
+      - Image format: png or jpg (default: png)
+      - JPEG quality, 2-31       (default: 2, jpg only)
+      - Scaling as width:height  (default: original resolution)
+      - Output file base name    (default: frame)
+
+REQUIREMENTS:
+    - ffmpeg must be installed and available on PATH
+    - bash 4.3+ (uses `wait -n` for the multi-file job queue)
+
+EXAMPLES:
+    ./framextractor.sh
+        Start the interactive prompts.
+
+    ./framextractor.sh --help
+        Show this help text and exit without prompting.
+
+Project repository / license details: see README.md
+EOF
+}
+
+show_version() {
+    echo "FrameXtractor v${SCRIPT_VERSION}"
+}
+
+# Handle -h/--help and -v/--version before any interactive prompt,
+# banner, or global setup runs.
+case "$1" in
+    -h|--help)
+        show_help
+        exit 0
+        ;;
+    -v|--version)
+        show_version
+        exit 0
+        ;;
+    "")
+        # no argument — fall through to normal interactive run
+        ;;
+    *)
+        echo "Unknown option: $1" >&2
+        echo "Try '$0 --help' for usage information." >&2
+        exit 1
+        ;;
+esac
+
 echo "========================================================"
 echo "   FrameXtractor — FFmpeg Interactive Frame Extractor   "
 echo "========================================================"
@@ -226,10 +322,10 @@ run_extraction() {
     mkdir -p "$output_dir"
 
     if [[ "$format" == "png" ]]; then
-        ffmpeg -hide_banner -loglevel info -i "$input_file" -vf "$vf_filter" \
+        ffmpeg -nostdin -hide_banner -loglevel info -i "$input_file" -vf "$vf_filter" \
                "$output_dir/$pattern" > "$log_file" 2>&1
     else
-        ffmpeg -hide_banner -loglevel info -i "$input_file" -vf "$vf_filter" \
+        ffmpeg -nostdin -hide_banner -loglevel info -i "$input_file" -vf "$vf_filter" \
                -q:v "$quality" "$output_dir/$pattern" > "$log_file" 2>&1
     fi
     echo $? > "${log_file}.exitcode"
@@ -284,10 +380,10 @@ run_single_mode() {
     echo
     echo "Starting frame extraction..."
     if [[ "$P_FORMAT" == "png" ]]; then
-        ffmpeg -hide_banner -loglevel info -i "$INPUT" -vf "$P_VF_FILTER" \
+        ffmpeg -nostdin -hide_banner -loglevel info -i "$INPUT" -vf "$P_VF_FILTER" \
                "$OUTPUT_DIR/$P_PATTERN"
     else
-        ffmpeg -hide_banner -loglevel info -i "$INPUT" -vf "$P_VF_FILTER" \
+        ffmpeg -nostdin -hide_banner -loglevel info -i "$INPUT" -vf "$P_VF_FILTER" \
                -q:v "$P_QUALITY" "$OUTPUT_DIR/$P_PATTERN"
     fi
 

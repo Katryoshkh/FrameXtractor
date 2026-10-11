@@ -12,11 +12,11 @@
 - **Custom output base name**, with default pattern if skipped.  
 - **Custom output folder name**, with default pattern if skipped.  
 - Automatic **output folder creation**, with auto-increment if folder exists.  
-- **Directory auto-scan & file picker** — leave the path blank and pick a video by number instead of typing the full filename or path.  
-- **Single or multi-file mode** — extract one video, or batch-process several videos in one run.  
+- **Directory auto-scan & file picker**: leave the path blank and pick a video by number instead of typing the full filename or path.  
+- **Single or multi-file mode**: extract one video, or batch-process several videos in one run.  
 - **Flexible output grouping** for multi-file mode: one shared folder, a separate folder per video, or custom grouping (e.g. video 2 & video 4 share a folder while others get their own).  
-- **Auto or Manual configuration** for multi-file mode — apply one shared setting to every video, or configure each video's folder name, output name, FPS, format, quality, and scale independently, all in a single run.  
-- **Safe, queued extraction** — jobs run through a concurrency-limited queue instead of firing all at once, defaulting to fully sequential (1 job at a time) so it won't overload weaker CPUs, with the option to raise concurrency manually.  
+- **Auto or Manual configuration** for multi-file mode: apply one shared setting to every video, or configure each video's folder name, output name, FPS, format, quality, and scale independently, all in a single run.  
+- **Safe, queued extraction**: jobs run through a concurrency-limited queue instead of firing all at once, defaulting to fully sequential (1 job at a time) so it won't overload weaker CPUs, with the option to raise concurrency manually.  
 - Per-job **success/failure reporting** with log files for anything that fails.  
 - **Lightweight Bash script**, requires only FFmpeg.
 
@@ -81,7 +81,7 @@ Select mode (1/2):
 ### Single File Mode
 
 You will be prompted to enter:
-1. Video file path — **leave it blank** to auto-scan the current directory and pick from a numbered list instead of typing the full path
+1. Video file path: **leave it blank** to auto-scan the current directory and pick from a numbered list instead of typing the full path
 2. Output folder name [default: frames]
 3. FPS (frames per second) [default: 30]
 4. Image format (png/jpg) [default: png]
@@ -125,15 +125,15 @@ Frames will be saved in the `sample_frames/` folder as `sample_0001.png`, `sampl
 
 Multi file mode browses the current directory (same picker as above), but lets you select **several videos at once**, decide how their output folders are grouped, and choose whether every video shares one configuration or is set up individually.
 
-1. Select videos — space/comma-separated numbers (`1 2 4` or `1,2,4`), or type `all`
+1. Select videos: space/comma-separated numbers (`1 2 4` or `1,2,4`), or type `all`
 2. Choose folder grouping:
    - `[1]` One shared output folder for **all** selected videos
    - `[2]` A **separate** output folder for each video
-   - `[3]` **Custom grouping** — assign a group number per video; videos sharing a number share a folder
+   - `[3]` **Custom grouping**: assign a group number per video; videos sharing a number share a folder
 3. Choose configuration mode:
-   - `[1]` **Auto** — one shared FPS/format/scale/base-name for every video, with output files auto-numbered per video (`shot1`, `shot2`, `shot3`, ...)
-   - `[2]` **Manual** — configure folder name, output base name, FPS, format, quality, and scale individually for **each** video, one after another, in the same run
-4. Review the summary, then set how many jobs may run **at the same time** (defaults to `1`, fully sequential — see [Queued Extraction](#-queued-extraction-concurrency) below)
+   - `[1]` **Auto**: one shared FPS/format/scale/base-name for every video, with output files auto-numbered per video (`shot1`, `shot2`, `shot3`, ...)
+   - `[2]` **Manual**: configure folder name, output base name, FPS, format, quality, and scale individually for **each** video, one after another, in the same run
+4. Review the summary, then set how many jobs may run **at the same time** (defaults to `1`, fully sequential; see [Queued Extraction](#-queued-extraction-concurrency) below)
 5. Confirm to start extraction
 
 **Example** (3 videos selected, custom grouping, auto configuration)
@@ -160,8 +160,8 @@ Videos with the SAME group number will share one output folder.
   Group number for [clip3.mp4]: 1
 
 How do you want to configure extraction settings?
-  [1] Auto — one shared FPS/format/scale/base-name applied to all videos
-  [2] Manual — configure each video individually
+  [1] Auto: one shared FPS/format/scale/base-name applied to all videos
+  [2] Manual: configure each video individually
 Choose configuration mode (1/2): 1
 
 Enter FPS (frames per second) [default: 30]: 60
@@ -202,15 +202,15 @@ Proceed with queued extraction of 3 job(s), 1 at a time? (y/n): y
 ========================================================
 All extractions complete!
 ```
-`clip1.mp4` and `clip3.mp4` end up merged in `frames_grp_1/`, while `clip2.mp4` gets its own `frames_grp_2/` — each with independently numbered output files.
+`clip1.mp4` and `clip3.mp4` end up merged in `frames_grp_1/`, while `clip2.mp4` gets its own `frames_grp_2/`, each with independently numbered output files.
 
 ## 🔹 Queued Extraction (Concurrency)
 
 Multi file mode never fires every `ffmpeg` job at once. Instead, jobs are placed in a **queue** with a configurable number of simultaneous slots:
 
-- Default is **`1`** — fully sequential, one video processed at a time.
-- You can raise this if you know your CPU can handle it, but there's no auto-detected "safe" number suggested — core count (`nproc`, etc.) doesn't reliably reflect real-world CPU strength, and detection tools behave inconsistently across Linux, WSL, Git Bash on Windows, macOS, and Android/Termux anyway.
-- As soon as any running job finishes, the next queued job takes its slot — no need to wait for the whole batch.
+- Default is **`1`**: fully sequential, one video processed at a time.
+- You can raise this if you know your CPU can handle it, but there's no auto-detected "safe" number suggested. Core count (`nproc`, etc.) doesn't reliably reflect real-world CPU strength, and detection tools behave inconsistently across Linux, WSL, Git Bash on Windows, macOS, and Android/Termux anyway.
+- As soon as any running job finishes, the next queued job takes its slot, so there's no need to wait for the whole batch.
 - After all jobs finish, a results table shows `[OK]` / `[FAIL]` per video, with a log file path for anything that failed.
 
 ## 🔹 Notes
@@ -233,7 +233,7 @@ Multi file mode never fires every `ffmpeg` job at once. Instead, jobs are placed
   Videos assigned to the same group (shared folder, or same custom group number) are written into that folder using their own independently numbered filename pattern, so files from different videos never overwrite each other.
 
 - Concurrency default:
-  Multi file mode defaults to `1` simultaneous job (fully sequential) to avoid overloading the CPU — see [Queued Extraction](#-queued-extraction-concurrency).
+  Multi file mode defaults to `1` simultaneous job (fully sequential) to avoid overloading the CPU. See [Queued Extraction](#-queued-extraction-concurrency).
 
 ## 🔹 Tips
 
@@ -243,13 +243,13 @@ Multi file mode never fires every `ffmpeg` job at once. Instead, jobs are placed
 
 - Use custom base names to keep multiple extractions organized.
 
-- Leave the video path blank to skip typing full filenames — the picker only needs the number.
+- Leave the video path blank to skip typing full filenames; the picker only needs the number.
 
 - Use **custom grouping** in multi file mode when you want related clips (e.g. parts of the same scene) merged into one output folder while everything else stays separate.
 
 - Use **Auto** configuration for quick batch jobs with the same settings; use **Manual** when each video needs its own FPS, format, or scale.
 
-- Only raise the concurrency slot count above `1` if you know your CPU can handle multiple simultaneous FFmpeg encodes — this is especially relevant on older laptops or mobile devices, regardless of core count.
+- Only raise the concurrency slot count above `1` if you know your CPU can handle multiple simultaneous FFmpeg encodes. This is especially relevant on older laptops or mobile devices, regardless of core count.
 
 - Script works on Linux, macOS, and Android (Termux).
 
